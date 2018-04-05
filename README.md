@@ -6,7 +6,7 @@ https://yanisurbis.github.io/reason-exercises/
 
 ## List of Exercises
 
-* Hello World
-* Clicker & Toggler
-* Counter
-* Click to see the current time
+1. Hello World
+2. Clicker & Toggler
+3. Counter
+4. Click to see the current time
