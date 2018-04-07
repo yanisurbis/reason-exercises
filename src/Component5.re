@@ -1,6 +1,4 @@
-open Js_date;
-
-open Js_global;
+open Js.Global;
 
 type time = {
   minutes: int,
@@ -27,10 +25,13 @@ type timerState =
 type state = {
   time,
   timerState,
+  intervalId: ref(option(intervalId)),
 };
 
+type actionWhileTicking = unit => unit;
+
 type action =
-  | Start
+  | StartTicking(actionWhileTicking)
   | Tick
   | Stop;
 
@@ -40,32 +41,35 @@ let initialTime: time = {minutes: 0, seconds: 0};
 
 let make = _children => {
   ...component,
-  initialState: () => {time: initialTime, timerState: Stopped},
+  initialState: () => {
+    time: initialTime,
+    timerState: Stopped,
+    intervalId: ref(None),
+  },
   reducer: (action, state) =>
     switch (action) {
-    | Start =>
-      ReasonReact.UpdateWithSideEffects(
-        {...state, timerState: Ticking},
-        (self => ignore(setTimeout(() => self.send(Tick), 1000))),
-      )
-    | Tick =>
-      switch (state.timerState) {
-      | Ticking =>
-        ReasonReact.UpdateWithSideEffects(
-          {...state, time: addSecond(state.time)},
-          (self => ignore(setTimeout(() => self.send(Tick), 1000))),
-        )
-      | Stopped => ReasonReact.Update({...state, time: initialTime})
-      }
-    | Stop => ReasonReact.Update({time: initialTime, timerState: Stopped})
+    | StartTicking(actionWhileTicking) =>
+      state.intervalId :=
+        Some(Js.Global.setInterval(actionWhileTicking, 1000));
+      ReasonReact.Update({...state, timerState: Ticking});
+    | Tick => ReasonReact.Update({...state, time: addSecond(state.time)})
+    | Stop =>
+      switch (state.intervalId^) {
+      | Some(intervalId) =>
+        Js.Global.clearInterval(intervalId);
+        state.intervalId := None;
+      | None => ()
+      };
+      ReasonReact.Update({...state, time: initialTime, timerState: Stopped});
     },
   render: self => {
+    let timerState = self.state.timerState;
     let time = self.state.time;
+    let actionWhileTicking: actionWhileTicking = () => self.send(Tick);
     let (buttonTitle, action) =
-      if (time === initialTime) {
-        ("Start", Start);
-      } else {
-        ("Stop", Stop);
+      switch (timerState) {
+      | Stopped => ("Start", StartTicking(actionWhileTicking))
+      | Ticking => ("Stop", Stop)
       };
     <div>
       <p> (ReasonReact.stringToElement(timeToString(time))) </p>
