@@ -10,6 +10,7 @@ var Component4$ReactTemplate = require("./Component4.bs.js");
 var Component5$ReactTemplate = require("./Component5.bs.js");
 var Component6$ReactTemplate = require("./Component6.bs.js");
 var Component7$ReactTemplate = require("./Component7.bs.js");
+var Component8$ReactTemplate = require("./Component8.bs.js");
 
 ReactDOMRe.renderToElementWithId(ReasonReact.element(/* None */0, /* None */0, Component1$ReactTemplate.make("Hello", /* array */[])), "index1");
 
@@ -24,5 +25,7 @@ ReactDOMRe.renderToElementWithId(ReasonReact.element(/* None */0, /* None */0, C
 ReactDOMRe.renderToElementWithId(ReasonReact.element(/* None */0, /* None */0, Component6$ReactTemplate.make(/* array */[])), "index6");
 
 ReactDOMRe.renderToElementWithId(ReasonReact.element(/* None */0, /* None */0, Component7$ReactTemplate.make(/* array */[])), "index7");
+
+ReactDOMRe.renderToElementWithId(ReasonReact.element(/* None */0, /* None */0, Component8$ReactTemplate.make(/* array */[])), "index8");
 
 /*  Not a pure module */

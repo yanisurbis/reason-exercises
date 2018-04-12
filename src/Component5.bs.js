@@ -36,17 +36,13 @@ var initialTime = /* record */[
 function make() {
   var newrecord = component.slice();
   newrecord[/* render */9] = (function (self) {
-      var timerState = self[/* state */2][/* timerState */1];
       var time = self[/* state */2][/* time */0];
-      var actionWhileTicking = function () {
-        return Curry._1(self[/* send */4], /* Tick */0);
-      };
-      var match = timerState !== 0 ? /* tuple */[
+      var match = time === initialTime ? /* tuple */[
           "Start",
-          /* StartTicking */[actionWhileTicking]
+          /* Start */0
         ] : /* tuple */[
           "Stop",
-          /* Stop */1
+          /* Stop */2
         ];
       var action = match[1];
       return React.createElement("div", undefined, React.createElement("p", undefined, timeToString(time)), React.createElement("button", {
@@ -58,37 +54,51 @@ function make() {
   newrecord[/* initialState */10] = (function () {
       return /* record */[
               /* time */initialTime,
-              /* timerState : Stopped */1,
-              /* intervalId */[/* None */0]
+              /* timerState : Stopped */1
             ];
     });
   newrecord[/* reducer */12] = (function (action, state) {
-      if (typeof action === "number") {
-        if (action !== 0) {
-          var match = state[/* intervalId */2][0];
-          if (match) {
-            clearInterval(match[0]);
-            state[/* intervalId */2][0] = /* None */0;
-          }
-          return /* Update */Block.__(0, [/* record */[
-                      /* time */initialTime,
-                      /* timerState : Stopped */1,
-                      /* intervalId */state[/* intervalId */2]
-                    ]]);
-        } else {
-          return /* Update */Block.__(0, [/* record */[
-                      /* time */addSecond(state[/* time */0]),
-                      /* timerState */state[/* timerState */1],
-                      /* intervalId */state[/* intervalId */2]
-                    ]]);
-        }
-      } else {
-        state[/* intervalId */2][0] = /* Some */[setInterval(action[0], 1000)];
-        return /* Update */Block.__(0, [/* record */[
-                    /* time */state[/* time */0],
-                    /* timerState : Ticking */0,
-                    /* intervalId */state[/* intervalId */2]
-                  ]]);
+      switch (action) {
+        case 0 : 
+            return /* UpdateWithSideEffects */Block.__(3, [
+                      /* record */[
+                        /* time */state[/* time */0],
+                        /* timerState : Ticking */0
+                      ],
+                      (function (self) {
+                          setTimeout((function () {
+                                  return Curry._1(self[/* send */4], /* Tick */1);
+                                }), 1000);
+                          return /* () */0;
+                        })
+                    ]);
+        case 1 : 
+            var match = state[/* timerState */1];
+            if (match !== 0) {
+              return /* Update */Block.__(0, [/* record */[
+                          /* time */initialTime,
+                          /* timerState */state[/* timerState */1]
+                        ]]);
+            } else {
+              return /* UpdateWithSideEffects */Block.__(3, [
+                        /* record */[
+                          /* time */addSecond(state[/* time */0]),
+                          /* timerState */state[/* timerState */1]
+                        ],
+                        (function (self) {
+                            setTimeout((function () {
+                                    return Curry._1(self[/* send */4], /* Tick */1);
+                                  }), 1000);
+                            return /* () */0;
+                          })
+                      ]);
+            }
+        case 2 : 
+            return /* Update */Block.__(0, [/* record */[
+                        /* time */initialTime,
+                        /* timerState : Stopped */1
+                      ]]);
+        
       }
     });
   return newrecord;
