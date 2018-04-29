@@ -13,3 +13,5 @@ ReactDOMRe.renderToElementWithId(<Component6 />, "index6");
 ReactDOMRe.renderToElementWithId(<Component7 />, "index7");
 
 ReactDOMRe.renderToElementWithId(<Component8 />, "index8");
+
+ReactDOMRe.renderToElementWithId(<Component9 />, "index9");

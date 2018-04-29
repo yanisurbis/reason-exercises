@@ -16,6 +16,8 @@
   "license": "MIT",
   "dependencies": {
     "@glennsl/bs-json": "^1.2.0",
+    "@sindresorhus/slugify": "^0.2.0",
+    "auth0-js": "^9.4.2",
     "bs-fetch": "^0.2.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
